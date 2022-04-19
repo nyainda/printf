@@ -29,6 +29,7 @@ int print_u(va_list u);
 int _putchar(char c);
 int _puts(char *str, int ascii);
 int _nbr_len(int prmNumber);
+int print_buf(char *buf, unsigned int nbuf);
 int (*get_op(const char c))(va_list);
 int _strlen_recursion(char *s);
 int convert_alpha_numeric(int nb, int upper);
