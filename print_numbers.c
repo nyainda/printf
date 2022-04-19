@@ -1,81 +1,131 @@
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "main.h"
 
 /**
- * print_i - prints an integer
- * @i: integer to print
- *
- * Return: number of chars and digits printed
+ * print_unsigned_number - print unsigned number
+ * @n: unsigned int to print
+ * Return: number of printed chars
  */
-int print_i(va_list i)
-{
-	int a[10];
-	int j, m, n, sum, count;
 
-	n = va_arg(i, int);
-	count = 0;
-	m = 1000000000;
-	a[0] = n / m;
-	for (j = 1; j < 10; j++)
+int print_unsigned_number(unsigned int n)
+{
+	int count = 0;
+	unsigned int nb = n;
+
+	if (nb <= 9)
 	{
-		m /= 10;
-		a[j] = (n / m) % 10;
+		_putchar(nb + '0');
+		return (1);
 	}
-	if (n < 0)
+	if (nb > 9)
 	{
-		_putchar('-');
-		count++;
-		for (j = 0; j < 10; j++)
-			a[j] *= -1;
+		count = print_unsigned_number(nb / 10) + 1;
+		_putchar(nb % 10 + '0');
+		return (count);
 	}
-	for (j = 0, sum = 0; j < 10; j++)
-	{
-		sum += a[j];
-		if (sum != 0 || j == 9)
-		{
-			_putchar('0' + a[j]);
-			count++;
-		}
-	}
-	return (count);
+	return (0);
 }
 
 /**
- * print_d - prints a decimal
- * @d: decimal to print
- *
- * Return: number of chars and digits printed
+ * print_number - display the number contained in an int
+ * @n: int to print
+ * Return: number of char
  */
-int print_d(va_list d)
+int print_number(int n)
 {
-	int a[10];
-	int j, m, n, sum, count;
+	unsigned int nb;
+	int count = 0;
 
-	n = va_arg(d, int);
-	count = 0;
-	m = 1000000000;
-	a[0] = n / m;
-	for (j = 1; j < 10; j++)
-	{
-		m /= 10;
-		a[j] = (n / m) % 10;
-	}
+	nb = n;
 	if (n < 0)
 	{
 		_putchar('-');
 		count++;
-		for (j = 0; j < 10; j++)
-			a[j] *= -1;
+		nb = -nb;
 	}
-	for (j = 0, sum = 0; j < 10; j++)
+	if (nb <= 9)
 	{
-		sum += a[j];
-		if (sum != 0 || j == 9)
-		{
-			_putchar('0' + a[j]);
-			count++;
-		}
+		count += _putchar(nb + '0');
+		return (count);
 	}
-	return (count);
+	if (nb > 9)
+	{
+		count += print_number(nb / 10) + 1;
+		_putchar(nb % 10 + '0');
+		return (count);
+	}
+	return (0);
+}
+/**
+ * _nbr_len - length of a number
+ * @prmNumber: number
+ * Return: length of the number
+ */
+
+int _nbr_len(int prmNumber)
+{
+	int cLoop = 0, number;
+
+	if (prmNumber == 0)
+		return (1);
+
+	number = prmNumber;
+
+	if (number < 0)
+	{
+		number *= -1;
+		cLoop++;	/* for the sign char */
+	}
+
+	while (number)
+	{
+		number /= 10;
+		cLoop++;
+	}
+
+	return (cLoop);
 }
 
-   
+/**
+ * _itoa - Convert an int to a string
+ * @prmNumber: int to convert
+ * Return: converted string
+ */
+
+char *_itoa(int prmNumber)
+{
+	char *s;
+	int cLoop;
+	long number;
+
+	number = prmNumber;
+	cLoop = _nbr_len(number);
+	s = malloc(sizeof(char) * cLoop + 1);
+
+	if (s == NULL)
+	{
+		return (NULL);
+	}
+
+	s[cLoop] = '\0';
+
+	if (number == 0)
+	{
+		s = "0";
+	}
+	else if (number < 0)
+	{
+		s[0] = '-';
+		number *= -1;
+	}
+
+	while (number)
+	{
+		s[--cLoop] = number % 10 + 48;
+		number /= 10;
+	}
+
+	return (s);
+}

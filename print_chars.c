@@ -1,116 +1,99 @@
-#include "main.h"
+#include <unistd.h>
 #include <stdlib.h>
+#include "main.h"
 
 /**
- * print_c - prints a char
- * @c: char to print
- *
- * Return: always 1
+ * _putchar - writes the character c to stdout
+ * @c: The character to print
+ * Return: number of printed char
  */
-int print_c(va_list c)
-{
-	char ch = (char)va_arg(c, int);
 
-	_putchar(ch);
-	return (1);
+int _putchar(char c)
+{
+	return (write(1, &c, 1));
 }
 
 /**
- * print_s - prints a string
- * @s: string to print
- *
- * Return: number of chars printed
+ * _puts - write all char from string to stdout
+ * @str: string to print
+ * @ascii: enable ascii restriction
+ * Return: number of printed char
  */
-int print_s(va_list s)
+
+int _puts(char *str, int ascii)
 {
-	int count;
-	char *str = va_arg(s, char *);
+	char *s;
+	int i = 0, sum = 0;
 
-	if (str == NULL)
-		str = "(null)";
-	for (count = 0; str[count]; count++)
+	while (str[i])
 	{
-		_putchar(str[count]);
-	}
-	return (count);
-}
-
-/**
- * hex_print - prints a char's ascii value in uppercase hex
- * @c: char to print
- *
- * Return: number of chars printed (always 2)
- */
-static int hex_print(char c)
-{
-	int count;
-	char diff = 'A' - ':';
-	char d[2];
-
-	d[0] = c / 16;
-	d[1] = c % 16;
-	for (count = 0; count < 2; count++)
-	{
-		if (d[count] >= 10)
-			_putchar('0' + diff + d[count]);
-		else
-			_putchar('0' + d[count]);
-	}
-	return (count);
-}
-
-/**
- * print_S - prints a string and nonprintable character ascii values
- * @S: string to print
- *
- * Return: number of chars printed
- */
-int print_S(va_list S)
-{
-	unsigned int i;
-	int count = 0;
-	char *str = va_arg(S, char *);
-
-	if (str == NULL)
-		str = "(null)";
-	for (i = 0; str[i]; i++)
-	{
-		if (str[i] < 32 || str[i] >= 127)
+		if (((str[i] >= 0 && str[i] < 32) || str[i] >= 127) && ascii)
 		{
-			_putchar('\\');
-			_putchar('x');
-			count += 2;
-			count += hex_print(str[i]);
+			s = convert_base(str[i], 16, 1);
+			sum += write(1, "\\x", 2);
+			if (str[i] >= 0 && str[i] < 16)
+				sum += _putchar('0');
+			sum += _puts(s, 0);
+			free(s);
+			i++;
 		}
 		else
 		{
-			_putchar(str[i]);
-			count++;
+			sum += _putchar(str[i]);
+			i++;
 		}
 	}
-	return (count);
+	return (sum);
 }
 
 /**
- * print_r - prints astring in reverse
- * @r: string to print
+ * _strlen_recursion - return the length of a string
  *
- * Return: number of chars printed
+ * @s: char pointer
+ *
+ * Return: the length of a string
  */
-int print_r(va_list r)
+int _strlen_recursion(char *s)
 {
-	char *str;
-	int i, count = 0;
-
-	str = va_arg(r, char *);
-	if (str == NULL)
-		str = ")llun(";
-	for (i = 0; str[i]; i++)
-		;
-	for (i -= 1; i >= 0; i--)
+	if (*s != '\0')
 	{
-		_putchar(str[i]);
-		count++;
+		return (_strlen_recursion(s + 1) + 1);
 	}
-	return (count);
+	else
+	{
+		return (0);
+	}
+}
+
+/**
+ * _strdup - a pointer to a newly allocated space in memory,
+ *           which contains a copy of the string given as a parameter.
+ *
+ * @str: char pointer to copy
+ *
+ * Return: a new char pointer
+ */
+char *_strdup(char *str)
+{
+	char *s;
+	int cLoop;
+
+	if (str == NULL)
+	{
+		return (NULL);
+	}
+
+	s = malloc(sizeof(char) * (_strlen_recursion(str) + 1));
+
+	if (s == NULL)
+	{
+		return (NULL);
+	}
+
+	for (cLoop = 0; cLoop < _strlen_recursion(str) + 1; cLoop++)
+	{
+		s[cLoop] = str[cLoop];
+	}
+
+	return (s);
 }
