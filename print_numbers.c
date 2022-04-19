@@ -78,7 +78,4 @@ int print_d(va_list d)
 	return (count);
 }
 
-    © 2022 GitHub, Inc.
-
-    Terms
-
+   
